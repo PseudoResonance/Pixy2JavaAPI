@@ -49,10 +49,11 @@ public class Pixy2Video {
 	/**
 	 * Gets average RGB value at 5x5 area around specified coordinates in the image
 	 * 
-	 * @param x X value
-	 * @param y Y value
-	 * @param rgb RGB container to return values in
-	 * @param saturate Whether or not to scale all RGB values to maximize the greatest value at 255
+	 * @param x        X value
+	 * @param y        Y value
+	 * @param rgb      RGB container to return values in
+	 * @param saturate Whether or not to scale all RGB values to maximize the
+	 *                 greatest value at 255
 	 * 
 	 * @return Pixy2 error code
 	 */

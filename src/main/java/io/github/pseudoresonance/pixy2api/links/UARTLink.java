@@ -72,7 +72,7 @@ public class UARTLink implements Link {
 	 * Closes UART/Serial port
 	 */
 	public void close() {
-		//serial.close();
+		// serial.close();
 	}
 
 	/**

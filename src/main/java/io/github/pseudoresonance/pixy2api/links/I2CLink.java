@@ -63,7 +63,7 @@ public class I2CLink implements Link {
 	 * Closes I2C port
 	 */
 	public void close() {
-		//i2c.close();
+		// i2c.close();
 	}
 
 	/**

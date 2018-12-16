@@ -26,14 +26,14 @@ import io.github.pseudoresonance.pixy2api.Pixy2.Checksum;
  *
  *         end license header
  *
- *         Arduino ICSP SPI link class 
+ *         Arduino ICSP SPI link class
  */
 
 public class SPILink implements Link {
 	private final static int PIXY_SPI_CLOCKRATE = 2000;
 
 	private SPI spi = null;
-	
+
 	/**
 	 * Opens SPI port
 	 *
@@ -63,7 +63,7 @@ public class SPILink implements Link {
 		spi = new SPI(port);
 		spi.setClockRate(PIXY_SPI_CLOCKRATE);
 		spi.setMSBFirst();
-		//spi.setSampleDataOnTrailingEdge();
+		// spi.setSampleDataOnTrailingEdge();
 		spi.setSampleDataOnFalling();
 		spi.setClockActiveLow();
 		spi.setChipSelectActiveLow();
@@ -74,7 +74,7 @@ public class SPILink implements Link {
 	 * Closes SPI port
 	 */
 	public void close() {
-		//spi.close();
+		// spi.close();
 	}
 
 	/**
