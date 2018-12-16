@@ -1,4 +1,4 @@
-package io.github.pseudoresonance.pixy2api;
+package io.github.pseudoresonance.pixy2api.links;
 
 import edu.wpi.first.wpilibj.SPI;
 import io.github.pseudoresonance.pixy2api.Pixy2.Checksum;

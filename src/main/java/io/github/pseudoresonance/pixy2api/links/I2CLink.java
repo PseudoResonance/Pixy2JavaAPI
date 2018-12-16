@@ -1,20 +1,21 @@
-package io.github.pseudoresonance.pixy2api;
+package io.github.pseudoresonance.pixy2api.links;
 
-import java.util.concurrent.TimeUnit;
+import java.util.Arrays;
 
-import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.I2C;
+import io.github.pseudoresonance.pixy2api.Pixy2;
 import io.github.pseudoresonance.pixy2api.Pixy2.Checksum;
 
 /**
  * Java Port of Pixy2 Arduino Library
  * 
- * FIRST Robotics WPI API UART/Serial Link to Pixy2
+ * FIRST Robotics WPI API I2C Link to Pixy2
  * 
  * @author PseudoResonance
  * 
  *         ORIGINAL HEADER -
- *         https://github.com/charmedlabs/pixy2/blob/master/src/host/arduino/libraries/Pixy2/Pixy2UART.h
- *         =============================================================================================
+ *         https://github.com/charmedlabs/pixy2/blob/master/src/host/arduino/libraries/Pixy2/Pixy2I2C.h
+ *         ============================================================================================
  *         begin license header
  *
  *         This file is part of Pixy CMUcam5 or "Pixy" for short
@@ -28,54 +29,45 @@ import io.github.pseudoresonance.pixy2api.Pixy2.Checksum;
  *
  *         end license header
  *
- *         Arduino UART link class, intended to be used with an Arduino with
- *         more than 1 UART, like the Arduino MEGA 2560.
+ *         Arduino I2C link class
  */
 
-public class UARTLink implements Link {
-	private final static int PIXY_UART_BAUDRATE = 19200;
+public class I2CLink implements Link {
+	private final static int PIXY_I2C_DEFAULT_ADDR = 0x54;
+	private final static int PIXY_I2C_MAX_SEND = 16; // don't send any more than 16 bytes at a time
 
-	private SerialPort serial = null;
+	private I2C i2c = null;
 
 	/**
-	 * Opens UART/Serial port
+	 * Opens I2C port
 	 *
-	 * @param arg UART/Serial port
+	 * @param arg I2C port
 	 * 
 	 * @return Returns 0
 	 */
 	public int open(int arg) {
-		SerialPort.Port port;
+		I2C.Port port;
 		switch (arg) {
 		case 1:
-			port = SerialPort.Port.kUSB;
-			break;
-		case 2:
-			port = SerialPort.Port.kUSB1;
-			break;
-		case 3:
-			port = SerialPort.Port.kUSB2;
-			break;
-		case 4:
-			port = SerialPort.Port.kMXP;
+			port = I2C.Port.kMXP;
 			break;
 		case Pixy2.PIXY_DEFAULT_ARGVAL:
 		default:
-			port = SerialPort.Port.kOnboard;
+			port = I2C.Port.kOnboard;
 		}
-		serial = new SerialPort(PIXY_UART_BAUDRATE, port);
+		i2c = new I2C(port, PIXY_I2C_DEFAULT_ADDR);
 		return 0;
 	}
 
 	/**
-	 * Closes UART/Serial port
+	 * Closes I2C port
 	 */
 	public void close() {
-		//serial.close();
+		//i2c.close();
 	}
 
 	/**
-	 * Receives and reads specified length of bytes from UART/Serial
+	 * Receives and reads specified length of bytes from I2C
 	 *
 	 * @param buffer Byte buffer to return value
 	 * @param length Length of value to read
@@ -84,35 +76,27 @@ public class UARTLink implements Link {
 	 * @return Length of value read
 	 */
 	public int receive(byte[] buffer, int length, Checksum cs) {
-		int i, j, c;
+		int i, n;
 		if (cs != null)
 			cs.reset();
-		for (i = 0; i < length; i++) {
-			// wait for byte, timeout after 2ms
-			// note for a baudrate of 19.2K, each byte takes about 500us
-			for (j = 0; true; j++) {
-				if (j == 200)
-					return -1;
-				c = serial.read(1)[0];
-				if (c >= 0)
-					break;
-				try {
-					TimeUnit.MICROSECONDS.sleep(10);
-				} catch (InterruptedException e) {
-				}
-			}
-			buffer[i] = (byte) c;
-			if (cs != null) {
-				byte b = buffer[i];
+		for (i = 0; i < length; i += n) {
+			// n is the number read -- it most likely won't be equal to length
+			n = 0;
+			byte[] read = new byte[length - i];
+			i2c.transaction(new byte[0], (byte) 0, read, (length - i));
+			for (int k = 0; k < read.length; k++) {
+				n++;
+				byte b = read[k];
 				int csb = b & 0xff;
 				cs.updateChecksum(csb);
+				buffer[k + i] = b;
 			}
 		}
 		return length;
 	}
 
 	/**
-	 * Receives and reads specified length of bytes from UART/Serial
+	 * Receives and reads specified length of bytes from I2C
 	 *
 	 * @param buffer Byte buffer to return value
 	 * @param length Length of value to read
@@ -124,7 +108,7 @@ public class UARTLink implements Link {
 	}
 
 	/**
-	 * Writes and sends buffer over UART/Serial
+	 * Writes and sends buffer over I2C
 	 *
 	 * @param buffer Byte buffer to send
 	 * @param length Length of value to send
@@ -132,6 +116,15 @@ public class UARTLink implements Link {
 	 * @return Length of value sent
 	 */
 	public int send(byte[] buffer, int length) {
-		return serial.write(buffer, length);
+		int i, packet;
+		for (i = 0; i < length; i += PIXY_I2C_MAX_SEND) {
+			if (length - i < PIXY_I2C_MAX_SEND)
+				packet = (length - i);
+			else
+				packet = PIXY_I2C_MAX_SEND;
+			byte[] send = Arrays.copyOfRange(buffer, i, packet);
+			i2c.transaction(send, packet, new byte[0], 0);
+		}
+		return length;
 	}
 }

@@ -4,6 +4,10 @@ import java.awt.Color;
 import java.util.concurrent.TimeUnit;
 
 import io.github.pseudoresonance.pixy2api.Pixy2Video.RGB;
+import io.github.pseudoresonance.pixy2api.links.I2CLink;
+import io.github.pseudoresonance.pixy2api.links.Link;
+import io.github.pseudoresonance.pixy2api.links.SPILink;
+import io.github.pseudoresonance.pixy2api.links.UARTLink;
 
 /**
  * Java Port of Pixy2 Arduino Library
