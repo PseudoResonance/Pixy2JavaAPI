@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
  * 
  * Defines video getter for Pixy2
  * 
+ * https://github.com/PseudoResonance/Pixy2JavaAPI
+ * 
  * @author PseudoResonance
  *
  *         ORIGINAL HEADER -

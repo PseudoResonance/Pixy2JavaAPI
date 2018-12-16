@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit;
  * 
  * Defines Color Connected Components tracker for Pixy2
  * 
+ * https://github.com/PseudoResonance/Pixy2JavaAPI
+ * 
  * @author PseudoResonance
  *
  *         ORIGINAL HEADER -

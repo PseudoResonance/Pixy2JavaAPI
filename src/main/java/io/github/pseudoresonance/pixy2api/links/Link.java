@@ -7,6 +7,8 @@ import io.github.pseudoresonance.pixy2api.Pixy2.Checksum;
  * 
  * Link interface for connecting to Pixy2
  * 
+ * https://github.com/PseudoResonance/Pixy2JavaAPI
+ * 
  * @author PseudoResonance
  */
 

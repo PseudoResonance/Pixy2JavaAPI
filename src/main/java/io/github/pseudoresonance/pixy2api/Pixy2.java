@@ -14,6 +14,8 @@ import io.github.pseudoresonance.pixy2api.links.UARTLink;
  * 
  * Interfaces with the Pixy2 over any provided, compatible link
  * 
+ * https://github.com/PseudoResonance/Pixy2JavaAPI
+ * 
  * @author PseudoResonance
  *
  *         ORIGINAL HEADER -

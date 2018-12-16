@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
  * 
  * Defines line tracker for Pixy2
  * 
+ * https://github.com/PseudoResonance/Pixy2JavaAPI
+ * 
  * @author PseudoResonance
  *
  *         ORIGINAL HEADER -
