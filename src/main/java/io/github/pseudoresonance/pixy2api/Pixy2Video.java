@@ -166,7 +166,7 @@ public class Pixy2Video {
 		/**
 		 * Sets RGB value from Color
 		 * 
-		 * @param rgb RGB value
+		 * @param color Color
 		 */
 		public void setRGB(Color color) {
 			this.r = color.getRed();

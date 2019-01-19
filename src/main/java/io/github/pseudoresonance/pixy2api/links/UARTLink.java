@@ -11,6 +11,8 @@ import io.github.pseudoresonance.pixy2api.Pixy2.Checksum;
  * 
  * FIRST Robotics WPI API UART/Serial Link to Pixy2
  * 
+ * CURRENTLY UNTESTED - Use SPI if possible!
+ * 
  * https://github.com/PseudoResonance/Pixy2JavaAPI
  * 
  * @author PseudoResonance
@@ -74,7 +76,7 @@ public class UARTLink implements Link {
 	 * Closes UART/Serial port
 	 */
 	public void close() {
-		// serial.close();
+		serial.close();
 	}
 
 	/**

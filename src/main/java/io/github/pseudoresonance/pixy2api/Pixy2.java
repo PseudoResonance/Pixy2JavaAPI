@@ -3,7 +3,6 @@ package io.github.pseudoresonance.pixy2api;
 import java.awt.Color;
 import java.util.concurrent.TimeUnit;
 
-import io.github.pseudoresonance.pixy2api.Pixy2Video.RGB;
 import io.github.pseudoresonance.pixy2api.links.I2CLink;
 import io.github.pseudoresonance.pixy2api.links.Link;
 import io.github.pseudoresonance.pixy2api.links.SPILink;
@@ -161,7 +160,7 @@ public class Pixy2 {
 	/**
 	 * Gets Pixy2 instance with supplied communication link type
 	 * 
-	 * @param link Communication {@link LinkType} to Pixy2
+	 * @param type Communication {@link LinkType} to Pixy2
 	 * 
 	 * @return Pixy2 instance
 	 */
@@ -556,17 +555,6 @@ public class Pixy2 {
 			return (byte) res;
 		} else
 			return PIXY_RESULT_ERROR; // some kind of bitstream error
-	}
-
-	/**
-	 * Sets Pixy2 LED color to specified Color
-	 * 
-	 * @param color RGB Color
-	 * 
-	 * @return Pixy2 error code
-	 */
-	public byte setLED(RGB color) {
-		return setLED(color.getR(), color.getG(), color.getB());
 	}
 
 	/**

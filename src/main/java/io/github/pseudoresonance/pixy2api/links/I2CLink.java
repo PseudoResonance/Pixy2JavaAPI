@@ -11,6 +11,8 @@ import io.github.pseudoresonance.pixy2api.Pixy2.Checksum;
  * 
  * FIRST Robotics WPI API I2C Link to Pixy2
  * 
+ * CURRENTLY UNTESTED - Use SPI if possible!
+ * 
  * https://github.com/PseudoResonance/Pixy2JavaAPI
  * 
  * @author PseudoResonance
@@ -65,7 +67,7 @@ public class I2CLink implements Link {
 	 * Closes I2C port
 	 */
 	public void close() {
-		// i2c.close();
+		i2c.close();
 	}
 
 	/**
@@ -89,8 +91,10 @@ public class I2CLink implements Link {
 			for (int k = 0; k < read.length; k++) {
 				n++;
 				byte b = read[k];
-				int csb = b & 0xff;
-				cs.updateChecksum(csb);
+				if (cs != null) {
+					int csb = b & 0xff;
+					cs.updateChecksum(csb);
+				}
 				buffer[k + i] = b;
 			}
 		}

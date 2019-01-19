@@ -65,8 +65,7 @@ public class SPILink implements Link {
 		spi = new SPI(port);
 		spi.setClockRate(PIXY_SPI_CLOCKRATE);
 		spi.setMSBFirst();
-		// spi.setSampleDataOnTrailingEdge();
-		spi.setSampleDataOnFalling();
+		spi.setSampleDataOnTrailingEdge();
 		spi.setClockActiveLow();
 		spi.setChipSelectActiveLow();
 		return 0;
@@ -76,7 +75,7 @@ public class SPILink implements Link {
 	 * Closes SPI port
 	 */
 	public void close() {
-		// spi.close();
+		spi.close();
 	}
 
 	/**
