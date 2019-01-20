@@ -92,8 +92,8 @@ public class SPILink implements Link {
 			cs.reset();
 		spi.read(false, buffer, length);
 		if (cs != null)
-			for (byte b : buffer) {
-				int csb = b & 0xff;
+			for (int i = 0; i < length; i++) {
+				int csb = buffer[i] & 0xff;
 				cs.updateChecksum(csb);
 			}
 		return length;

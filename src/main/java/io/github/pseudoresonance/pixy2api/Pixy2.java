@@ -378,7 +378,6 @@ public class Pixy2 {
 		res = getSync();
 		if (res < 0)
 			return res;
-
 		if (m_cs) {
 			res = link.receive(buffer, 4);
 			if (res < 0)
@@ -390,9 +389,9 @@ public class Pixy2 {
 			csSerial = ((buffer[3] & 0xff) << 8) | (buffer[2] & 0xff);
 
 			res = link.receive(buffer, length, csCalc);
+
 			if (res < 0)
 				return res;
-
 			if (csSerial != csCalc.getChecksum())
 				return PIXY_RESULT_CHECKSUM_ERROR;
 		} else {
@@ -441,7 +440,10 @@ public class Pixy2 {
 		// poll for program to change
 		while (true) {
 			for (int i = 0; i < PIXY_MAX_PROGNAME; i++) {
-				bufferPayload[i] = (byte) prog[i];
+				if (i < prog.length)
+					bufferPayload[i] = (byte) prog[i];
+				else
+					bufferPayload[i] = Character.MIN_VALUE;
 			}
 			length = PIXY_MAX_PROGNAME;
 			type = PIXY_TYPE_REQUEST_CHANGE_PROG;

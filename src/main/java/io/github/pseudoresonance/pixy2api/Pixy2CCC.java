@@ -80,7 +80,6 @@ public class Pixy2CCC {
 	 * @return Pixy2 error code
 	 */
 	public int getBlocks(boolean wait, int sigmap, int maxBlocks) {
-		blocks.clear();
 		long start = System.currentTimeMillis();
 
 		while (true) {
@@ -94,14 +93,15 @@ public class Pixy2CCC {
 			pixy.sendPacket();
 			if (pixy.receivePacket() == 0) {
 				if (pixy.type == CCC_RESPONSE_BLOCKS) {
-					for (int i = 0; (i + 1) * 14 < pixy.buffer.length; i++) {
-						Block b = new Block(((pixy.buffer[i * 8 + 1] & 0xff) << 8) | (pixy.buffer[i * 8] & 0xff),
-								((pixy.buffer[i * 8 + 3] & 0xff) << 8) | (pixy.buffer[i * 8 + 2] & 0xff),
-								((pixy.buffer[i * 8 + 5] & 0xff) << 8) | (pixy.buffer[i * 8 + 4] & 0xff),
-								((pixy.buffer[i * 8 + 7] & 0xff) << 8) | (pixy.buffer[i * 8 + 6] & 0xff),
-								((pixy.buffer[i * 8 + 9] & 0xff) << 8) | (pixy.buffer[i * 8 + 8] & 0xff),
-								(pixy.buffer[i * 8 + 11] << 8) | pixy.buffer[i * 8 + 10], pixy.buffer[i * 8 + 12],
-								pixy.buffer[i * 8 + 13]);
+					blocks = new ArrayList<Block>();
+					for (int i = 0; i + 13 < pixy.buffer.length; i += 14) {
+						Block b = new Block(((pixy.buffer[i + 1] & 0xff) << 8) | (pixy.buffer[i] & 0xff),
+								((pixy.buffer[i + 3] & 0xff) << 8) | (pixy.buffer[i + 2] & 0xff),
+								((pixy.buffer[i + 5] & 0xff) << 8) | (pixy.buffer[i + 4] & 0xff),
+								((pixy.buffer[i + 7] & 0xff) << 8) | (pixy.buffer[i + 6] & 0xff),
+								((pixy.buffer[i + 9] & 0xff) << 8) | (pixy.buffer[i + 8] & 0xff),
+								((pixy.buffer[i + 11] & 0xff) << 8) | (pixy.buffer[i + 10] & 0xff),
+								(pixy.buffer[i + 12] & 0xff), (pixy.buffer[i + 13] & 0xff));
 						blocks.add(b);
 					}
 					return blocks.size();
@@ -115,8 +115,9 @@ public class Pixy2CCC {
 					}
 
 				}
-			} else
+			} else {
 				return Pixy2.PIXY_RESULT_ERROR; // some kind of bitstream error
+			}
 			if (System.currentTimeMillis() - start > 500) {
 				return Pixy2.PIXY_RESULT_ERROR; // timeout to prevent lockup
 			}
