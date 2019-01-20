@@ -15,7 +15,7 @@ The maven repository is located at: https://nexus.otake.pw/repository/maven-publ
 
 Add `maven { url 'https://nexus.otake.pw/repository/maven-public/' }` under `repositories`
 
-Add `compile 'pw.otake.pseudoresonance:pixy2-java-api:1.0'` under `dependencies`
+Add `compile 'pw.otake.pseudoresonance:pixy2-java-api:1.1'` under `dependencies` Replace `1.1` with the current version of the API.
 
 Your `build.gradle` should resemble this:
 
@@ -29,7 +29,7 @@ repositories {
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
 dependencies {
-    compile 'pw.otake.pseudoresonance:pixy2-java-api:1.0'
+    compile 'pw.otake.pseudoresonance:pixy2-java-api:1.1'
     compile wpi.deps.wpilib()
     compile wpi.deps.vendor.java()
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
