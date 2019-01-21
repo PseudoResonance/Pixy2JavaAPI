@@ -120,7 +120,7 @@ public class Pixy2Line {
 					for (offset = 0, res = 0; pixy.length > offset; offset += fsize + 2) {
 						ftype = pixy.buffer[offset];
 						fsize = pixy.buffer[offset + 1];
-						fdata = Arrays.copyOfRange(pixy.buffer, offset + 2, pixy.buffer.length);
+						fdata = Arrays.copyOfRange(pixy.buffer, offset + 2, pixy.receiveLength);
 						if (ftype == LINE_VECTOR) {
 							vectors = new Vector[(int) Math.floor(fdata.length / 6)];
 							for (int i = 0; (i + 1) * 6 < fdata.length; i++) {
