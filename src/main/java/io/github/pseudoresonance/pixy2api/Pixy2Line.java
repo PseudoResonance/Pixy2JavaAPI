@@ -180,6 +180,33 @@ public class Pixy2Line {
 	}
 
 	/**
+	 * Gets detected lines from cache
+	 * 
+	 * @return Pixy2 Lines
+	 */
+	public Vector[] getVectors() {
+		return vectors;
+	}
+
+	/**
+	 * Gets detected intersections from cache
+	 * 
+	 * @return Pixy2 Intersectionss
+	 */
+	public Intersection[] getIntersections() {
+		return intersections;
+	}
+
+		/**
+	 * Gets detected barcodes from cache
+	 * 
+	 * @return Pixy2 Barcodes
+	 */
+	public Barcode[] getBarcodes() {
+		return barcodes;
+	}
+
+	/**
 	 * Sets Pixy2 line tracking mode
 	 * 
 	 * @param mode Pixy2 mode
