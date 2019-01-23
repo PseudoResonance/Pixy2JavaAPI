@@ -104,7 +104,7 @@ public class Pixy2Line {
 		vectors = null;
 		intersections = null;
 		barcodes = null;
-		
+
 		long start = System.currentTimeMillis();
 
 		while (true) {
@@ -141,8 +141,7 @@ public class Pixy2Line {
 									int arr = ((size * i) + 4);
 									int index = fdata[arr + (4 * l)];
 									int reserved = fdata[arr + (4 * l) + 1];
-									short angle = (short) (
-											((fdata[arr + (4 * l) + 3] & 0xff) << 8)
+									short angle = (short) (((fdata[arr + (4 * l) + 3] & 0xff) << 8)
 											| (fdata[arr + (4 * l) + 2] & 0xff));
 									IntersectionLine intLine = new IntersectionLine(index, reserved, angle);
 									lines[l] = intLine;
@@ -203,7 +202,7 @@ public class Pixy2Line {
 		return intersections;
 	}
 
-		/**
+	/**
 	 * Gets detected barcodes from cache
 	 * 
 	 * @return Pixy2 Barcodes
