@@ -51,7 +51,7 @@ publishing {
             artifact javadocJar
         	groupId = 'pw.otake.pseudoresonance'
             artifactId = 'pixy2-java-api'
-            version = '1.2'
+            version = '1.3'
             pom {
                 name = 'Pixy2JavaAPI'
                 description = 'Java port of Pixy2 API for FIRST Robotics'
