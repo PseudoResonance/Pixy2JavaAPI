@@ -93,7 +93,7 @@ public class Pixy2CCC {
 			pixy.sendPacket();
 			if (pixy.receivePacket() == 0) {
 				if (pixy.type == CCC_RESPONSE_BLOCKS) {
-					blocks = new ArrayList<Block>();
+					blocks.clear();
 					for (int i = 0; i + 13 < pixy.length; i += 14) {
 						Block b = new Block(((pixy.buffer[i + 1] & 0xff) << 8) | (pixy.buffer[i] & 0xff),
 								((pixy.buffer[i + 3] & 0xff) << 8) | (pixy.buffer[i + 2] & 0xff),
