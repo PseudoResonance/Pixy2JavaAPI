@@ -93,9 +93,9 @@ public class Pixy2Line {
 	 * @return Pixy2 error code
 	 */
 	public byte getMainFeatures()
-  {
-    return getFeatures(LINE_GET_MAIN_FEATURES, LINE_ALL_FEATURES, true); 
-  }
+	{
+		return getFeatures(LINE_GET_MAIN_FEATURES, LINE_ALL_FEATURES, true); 
+	}
 
 	/**
 	 * Gets specified features from Pixy2
