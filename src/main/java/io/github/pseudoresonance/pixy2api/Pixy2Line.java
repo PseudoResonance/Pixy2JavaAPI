@@ -88,13 +88,13 @@ public class Pixy2Line {
 	}
 
 	/**
-	 * Gets the main features from the Pixy2.  This is a more constrained line tracking algorithm.
+	 * Gets the main features from the Pixy2. This is a more constrained line
+	 * tracking algorithm.
 	 * 
 	 * @return Pixy2 error code
 	 */
-	public byte getMainFeatures()
-	{
-		return getFeatures(LINE_GET_MAIN_FEATURES, LINE_ALL_FEATURES, true); 
+	public byte getMainFeatures() {
+		return getFeatures(LINE_GET_MAIN_FEATURES, LINE_ALL_FEATURES, true);
 	}
 
 	/**
@@ -347,7 +347,7 @@ public class Pixy2Line {
 		 * @param index Vector index
 		 * @param flags Vector flags
 		 */
-		private Vector(int x0, int y0, int x1, int y1, int index, int flags) {
+		public Vector(int x0, int y0, int x1, int y1, int index, int flags) {
 			this.x0 = x0;
 			this.y0 = y0;
 			this.x1 = x1;
@@ -428,7 +428,7 @@ public class Pixy2Line {
 		 * @param reserved Reserved
 		 * @param angle    Line angle
 		 */
-		private IntersectionLine(int index, int reserved, short angle) {
+		public IntersectionLine(int index, int reserved, short angle) {
 			this.index = index;
 			this.reserved = reserved;
 			this.angle = angle;
@@ -471,7 +471,7 @@ public class Pixy2Line {
 		 * @param reserved Reserved
 		 * @param lines    Array of lines
 		 */
-		private Intersection(int x, int y, int number, int reserved, IntersectionLine[] lines) {
+		public Intersection(int x, int y, int number, int reserved, IntersectionLine[] lines) {
 			this.x = x;
 			this.y = y;
 			this.number = number;
@@ -539,7 +539,7 @@ public class Pixy2Line {
 		 * @param flags Barcode flags
 		 * @param code  Code
 		 */
-		private Barcode(int x, int y, int flags, int code) {
+		public Barcode(int x, int y, int flags, int code) {
 			this.x = x;
 			this.y = y;
 			this.flags = flags;

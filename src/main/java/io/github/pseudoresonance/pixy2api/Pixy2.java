@@ -312,14 +312,18 @@ public class Pixy2 {
 	}
 
 	/**
-	 * Get width of the pixy's visual frame after it is calcualted during init
+	 * Get width of the pixy's visual frame after initialization
+	 * 
+	 * @return Pixy2 Frame Width
 	 */
 	public int getFrameWidth() {
 		return frameWidth;
 	}
 
 	/**
-	 * Get height of the pixy's visual frame after it is calcualted during inits
+	 * Get height of the pixy's visual frame after initialization
+	 * 
+	 * @return Pixy2 Frame Height
 	 */
  	public int getFrameHeight() {
 		return frameHeight;

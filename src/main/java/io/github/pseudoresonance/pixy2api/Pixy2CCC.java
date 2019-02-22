@@ -155,7 +155,7 @@ public class Pixy2CCC {
 		 * @param index     Block index
 		 * @param age       Block age
 		 */
-		private Block(int signature, int x, int y, int width, int height, int angle, int index, int age) {
+		public Block(int signature, int x, int y, int width, int height, int angle, int index, int age) {
 			this.signature = signature;
 			this.x = x;
 			this.y = y;
