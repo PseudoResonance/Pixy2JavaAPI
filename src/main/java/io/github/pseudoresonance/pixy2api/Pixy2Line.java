@@ -88,6 +88,16 @@ public class Pixy2Line {
 	}
 
 	/**
+	 * Gets the main features from the Pixy2.  This is a more constrained line tracking algorithm.
+	 * 
+	 * @return Pixy2 error code
+	 */
+	public byte getMainFeatures()
+	{
+		return getFeatures(LINE_GET_MAIN_FEATURES, LINE_ALL_FEATURES, true); 
+	}
+
+	/**
 	 * Gets specified features from Pixy2
 	 * 
 	 * @param type     Type of features to get
