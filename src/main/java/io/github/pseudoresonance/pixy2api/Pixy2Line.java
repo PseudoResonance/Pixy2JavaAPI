@@ -147,7 +147,7 @@ public class Pixy2Line {
 									.floor(fdata.length / (4 + (4 * LINE_MAX_INTERSECTION_LINES)))];
 							for (int i = 0; (i + 1) * size < fdata.length; i++) {
 								IntersectionLine[] lines = new IntersectionLine[LINE_MAX_INTERSECTION_LINES];
-								for (int l = 0; l <= LINE_MAX_INTERSECTION_LINES; l++) {
+								for (int l = 0; l < LINE_MAX_INTERSECTION_LINES; l++) {
 									int arr = ((size * i) + 4);
 									int index = fdata[arr + (4 * l)];
 									int reserved = fdata[arr + (4 * l) + 1];
