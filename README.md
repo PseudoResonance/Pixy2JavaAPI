@@ -58,7 +58,7 @@ SPI is the recommended link type due to it's higher data transfer rate as well a
 | 6 | ⏚ Ground |
 | 7 | CS0 (Optional) |
 
-**NOTE**: Pin 7/CS0 pin is the optional SPI Slave Select (SS) pin. It can be connected to any SS pin on the RoboRIO, CS0, CS1, CS2 or CS3. If slave select functionality is not needed, set the Pixy2 to use the data output `Arduino ICSP SPI`. Use `SPI with SS` for slave select support. In the code, the slave pin in use can be selected by using an initialization argument of the corresponding pin. 0 for CS0, 1 for CS1, et
+**NOTE**: Pin 7/CS0 pin is the optional SPI Slave Select (SS) pin. It can be connected to any SS pin on the RoboRIO, CS0, CS1, CS2 or CS3. If slave select functionality is not needed, set the Pixy2 to use the data output `Arduino ICSP SPI`. Use `SPI with SS` for slave select support. In the code, the slave pin in use can be selected by using an [initialization argument](#using-the-api) of the corresponding pin. 0 for CS0, 1 for CS1, etc.
 
 ### I2C
 | Pixy2 Port | RoboRIO Port |
