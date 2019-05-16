@@ -15,7 +15,7 @@ import io.github.pseudoresonance.pixy2api.links.UARTLink;
  * 
  * https://github.com/PseudoResonance/Pixy2JavaAPI
  * 
- * @author PseudoResonance
+ * @author PseudoResonance (Josh Otake)
  *
  *         ORIGINAL HEADER -
  *         https://github.com/charmedlabs/pixy2/blob/master/src/host/arduino/libraries/Pixy2/TPixy2.h
@@ -104,8 +104,10 @@ public class Pixy2 {
 	 */
 	private Pixy2(Link link) {
 		this.link = link;
+		// Initializes send/return buffer and payload buffer
 		buffer = new byte[PIXY_BUFFERSIZE + PIXY_SEND_HEADER_SIZE];
 		bufferPayload = new byte[PIXY_BUFFERSIZE];
+		// Initializes tracker objects
 		this.ccc = new Pixy2CCC(this);
 		this.line = new Pixy2Line(this);
 		this.video = new Pixy2Video(this);
@@ -119,9 +121,12 @@ public class Pixy2 {
 	 * @return Pixy2 error code
 	 */
 	public int init(int argument) {
+		// Opens link
 		int ret = link.open(argument);
 		if (ret >= 0) {
+			// Tries to connect, times out if unable to communicate after 5 seconds
 			for (long t = System.currentTimeMillis(); System.currentTimeMillis() - t < 5000;) {
+				// Gets version and resolution to check if communication is successful and stores for future use
 				if (getVersion() >= 0) {
 					getResolution();
 					return PIXY_RESULT_OK;
@@ -137,7 +142,7 @@ public class Pixy2 {
 	}
 
 	/**
-	 * Initializes Pixy2 and waits for startup to complete using default argument
+	 * Initializes Pixy2 and waits for startup to complete using default link argument
 	 * value
 	 * 
 	 * @return Pixy2 error code
@@ -330,7 +335,7 @@ public class Pixy2 {
 	}
 
 	/**
-	 * Synchronizes communication with Pixy2
+	 * Looks for Pixy2 communication synchronization bytes to find start of message
 	 * 
 	 * @return Pixy2 error code
 	 */
@@ -338,14 +343,14 @@ public class Pixy2 {
 		int i, attempts, cprev, res, start, ret;
 		byte[] c = new byte[1];
 
-		// parse bytes until we find sync
+		// Parse incoming bytes until sync bytes are found
 		for (i = attempts = cprev = 0; true; i++) {
 			res = link.receive(c, 1) & 0xff;
 			if (res >= PIXY_RESULT_OK) {
 				ret = c[0] & 0xff;
-				// since we're using little endian, previous byte is least significant byte
+				// Since we're using little endian, previous byte is least significant byte
 				start = cprev;
-				// current byte is most significant byte
+				// Current byte is most significant byte
 				start |= ret << 8;
 				cprev = ret;
 				if (start == PIXY_CHECKSUM_SYNC) {
@@ -359,7 +364,7 @@ public class Pixy2 {
 			}
 			// If we've read some bytes and no sync, then wait and try again.
 			// And do that several more times before we give up.
-			// Pixy guarantees to respond within 100us.
+			// Pixy2 guarantees to respond within 100us.
 			if (i >= 4) {
 				if (attempts >= 4)
 					return PIXY_RESULT_ERROR;
@@ -374,7 +379,7 @@ public class Pixy2 {
 	}
 
 	/**
-	 * Gets stored Pixy2 Version info or retrieves from Pixy2 if not present
+	 * Gets stored Pixy2 {@link Version} info or retrieves from Pixy2 if not present
 	 * 
 	 * @return Pixy2 Version Info
 	 */
@@ -385,7 +390,7 @@ public class Pixy2 {
 	}
 
 	/**
-	 * Receives packet from Pixy2 to buffer
+	 * Receives packet from Pixy2 and outputs to buffer for further processing
 	 * 
 	 * @return Length of bytes received or Pixy2 error code
 	 */
@@ -393,10 +398,13 @@ public class Pixy2 {
 		int csSerial, res;
 		Checksum csCalc = new Checksum();
 
+		// Waits for sync bytes
 		res = getSync();
 		if (res < 0)
+			// Sync not found
 			return res;
 		if (m_cs) {
+			// Checksum sync
 			res = link.receive(buffer, 4);
 			if (res < 0)
 				return res;
@@ -406,20 +414,24 @@ public class Pixy2 {
 
 			csSerial = ((buffer[3] & 0xff) << 8) | (buffer[2] & 0xff);
 
+			// Receives message from buffer
 			res = link.receive(buffer, length, csCalc);
 
 			if (res < 0)
 				return res;
+			// Checks for accuracy with checksum
 			if (csSerial != csCalc.getChecksum())
 				return PIXY_RESULT_CHECKSUM_ERROR;
 		} else {
+			// Non-checksum sync
 			res = link.receive(buffer, 2);
 			if (res < 0)
 				return res;
 
-			type = buffer[0];
-			length = buffer[1];
+			type = buffer[0] & 0xff;
+			length = buffer[1] & 0xff;
 
+			// Receives message from buffer
 			res = link.receive(buffer, length);
 
 			if (res < 0)
@@ -434,30 +446,32 @@ public class Pixy2 {
 	 * @return Length of bytes sent or Pixy2 error code
 	 */
 	protected int sendPacket() {
-		// write header info at beginning of buffer
+		// Write header info at beginning of buffer
 		buffer[0] = (byte) (PIXY_NO_CHECKSUM_SYNC & 0xff);
 		buffer[1] = (byte) ((PIXY_NO_CHECKSUM_SYNC >> 8) & 0xff);
 		buffer[2] = (byte) type;
 		buffer[3] = (byte) length;
-		// send whole thing -- header and data in one call
+		// Add payload data to buffer
 		for (int i = 0; i < length; i++) {
 			buffer[4 + i] = bufferPayload[i];
 		}
+		// Send buffer
 		return link.send(buffer, (byte) (length + PIXY_SEND_HEADER_SIZE));
 	}
 
 	/**
 	 * Sends change program packet to Pixy2
 	 * 
-	 * @param prog Program data
+	 * @param prog Program name
 	 * 
 	 * @return Pixy2 error code
 	 */
 	public byte changeProg(char[] prog) {
 		int res = 0;
 
-		// poll for program to change
+		// Poll for program to change
 		while (true) {
+			// Truncates supplied program name, or adds empty characters after to indicate end of string
 			for (int i = 0; i < PIXY_MAX_PROGNAME; i++) {
 				if (i < prog.length)
 					bufferPayload[i] = (byte) prog[i];
@@ -471,12 +485,13 @@ public class Pixy2 {
 				res = ((buffer[3] & 0xff) << 24) | ((buffer[2] & 0xff) << 16) | ((buffer[1] & 0xff) << 8)
 						| (buffer[0] & 0xff);
 				if (res > 0) {
-					getResolution(); // get resolution so we have it
-					return PIXY_RESULT_OK; // success
+					getResolution(); // Get resolution for future use
+					return PIXY_RESULT_OK; // Success
 				}
 			} else
-				return PIXY_RESULT_ERROR; // some kind of bitstream error
+				return PIXY_RESULT_ERROR; // Some kind of bitstream error
 			try {
+				// Timeout to try again
 				TimeUnit.MICROSECONDS.sleep(1000);
 			} catch (InterruptedException e) {
 			}
@@ -486,7 +501,7 @@ public class Pixy2 {
 	/**
 	 * Gets version info from Pixy2
 	 * 
-	 * @return Pixy2 error code
+	 * @return Buffer length or Pixy2 error code
 	 */
 	public int getVersion() {
 		length = 0;
@@ -495,11 +510,11 @@ public class Pixy2 {
 		if (receivePacket() == 0) {
 			if (type == PIXY_TYPE_RESPONSE_VERSION) {
 				version = new Version(buffer);
-				return length;
+				return length; // Success
 			} else if (type == PIXY_TYPE_RESPONSE_ERROR)
 				return PIXY_RESULT_BUSY;
 		}
-		return PIXY_RESULT_ERROR; // some kind of bitstream error
+		return PIXY_RESULT_ERROR; // Some kind of bitstream error
 	}
 
 	/**
@@ -509,18 +524,18 @@ public class Pixy2 {
 	 */
 	public byte getResolution() {
 		length = 1;
-		bufferPayload[0] = 0; // for future types of queries
+		bufferPayload[0] = 0; // Adds empty byte to payload as placeholder for future queries
 		type = PIXY_TYPE_REQUEST_RESOLUTION;
 		sendPacket();
 		if (receivePacket() == 0) {
 			if (type == PIXY_TYPE_RESPONSE_RESOLUTION) {
 				frameWidth = ((buffer[1] & 0xff) << 8) | (buffer[0] & 0xff);
 				frameHeight = ((buffer[3] & 0xff) << 8) | (buffer[2] & 0xff);
-				return PIXY_RESULT_OK; // success
+				return PIXY_RESULT_OK; // Success
 			} else
 				return PIXY_RESULT_ERROR;
 		} else
-			return PIXY_RESULT_ERROR; // some kind of bitstream error
+			return PIXY_RESULT_ERROR; // Some kind of bitstream error
 	}
 
 	/**
@@ -533,7 +548,7 @@ public class Pixy2 {
 	public byte setCameraBrightness(int brightness) {
 		int res;
 
-		// Limits brightness between the min and max
+		// Limits brightness between the 0 and 255
 		brightness = (brightness >= 255 ? 255 : (brightness <= 0 ? 0 : brightness));
 
 		bufferPayload[0] = (byte) brightness;
@@ -543,9 +558,9 @@ public class Pixy2 {
 		if (receivePacket() == 0 && type == PIXY_TYPE_RESPONSE_RESULT && length == 4) {
 			res = ((buffer[3] & 0xff) << 24) | ((buffer[2] & 0xff) << 16) | ((buffer[1] & 0xff) << 8)
 					| (buffer[0] & 0xff);
-			return (byte) res;
+			return (byte) res; // Success
 		} else
-			return PIXY_RESULT_ERROR; // some kind of bitstream error
+			return PIXY_RESULT_ERROR; // Some kind of bitstream error
 	}
 
 	/**
@@ -559,7 +574,7 @@ public class Pixy2 {
 	public byte setServos(int pan, int tilt) {
 		int res;
 
-		// Limits servo values between the defined min and max
+		// Limits servo values between 0 and 1000
 		pan = (pan >= PIXY_RCS_MAX_POS ? PIXY_RCS_MAX_POS : (pan <= PIXY_RCS_MIN_POS ? PIXY_RCS_MIN_POS : pan));
 		tilt = (tilt >= PIXY_RCS_MAX_POS ? PIXY_RCS_MAX_POS : (tilt <= PIXY_RCS_MIN_POS ? PIXY_RCS_MIN_POS : tilt));
 
@@ -573,9 +588,9 @@ public class Pixy2 {
 		if (receivePacket() == 0 && type == PIXY_TYPE_RESPONSE_RESULT && length == 4) {
 			res = ((buffer[3] & 0xff) << 24) | ((buffer[2] & 0xff) << 16) | ((buffer[1] & 0xff) << 8)
 					| (buffer[0] & 0xff);
-			return (byte) res;
+			return (byte) res; // Success
 		} else
-			return PIXY_RESULT_ERROR; // some kind of bitstream error
+			return PIXY_RESULT_ERROR; // Some kind of bitstream error
 	}
 
 	/**
@@ -612,7 +627,7 @@ public class Pixy2 {
 	public byte setLED(int r, int g, int b) {
 		int res;
 
-		// Limits rgb values between the min and max
+		// Limits rgb values between 0 and 255
 		r = (r >= 255 ? 255 : (r <= 0 ? 0 : r));
 		g = (g >= 255 ? 255 : (g <= 0 ? 0 : g));
 		b = (b >= 255 ? 255 : (b <= 0 ? 0 : b));
@@ -626,16 +641,18 @@ public class Pixy2 {
 		if (receivePacket() == 0 && type == PIXY_TYPE_RESPONSE_RESULT && length == 4) {
 			res = ((buffer[3] & 0xff) << 24) | ((buffer[2] & 0xff) << 16) | ((buffer[1] & 0xff) << 8)
 					| (buffer[0] & 0xff);
-			return (byte) res;
+			return (byte) res; // Success
 		} else
-			return PIXY_RESULT_ERROR; // some kind of bitstream error
+			return PIXY_RESULT_ERROR; // Some kind of bitstream error
 	}
 
 	/**
 	 * Turns Pixy2 light source on/off
 	 * 
-	 * @param upper Turns white LEDs on/off
-	 * @param lower Sets RGB values to on/off
+	 * Use 1 to indicate on, 0 to indicate off
+	 * 
+	 * @param upper Byte indicating status of white LEDs
+	 * @param lower Byte indicating status of RGB LED
 	 * 
 	 * @return Pixy2 error code
 	 */
@@ -650,15 +667,15 @@ public class Pixy2 {
 		if (receivePacket() == 0 && type == PIXY_TYPE_RESPONSE_RESULT && length == 4) {
 			res = ((buffer[3] & 0xff) << 24) | ((buffer[2] & 0xff) << 16) | ((buffer[1] & 0xff) << 8)
 					| (buffer[0] & 0xff);
-			return (byte) res;
+			return (byte) res; // Success
 		} else
-			return PIXY_RESULT_ERROR; // some kind of bitstream error
+			return PIXY_RESULT_ERROR; // Some kind of bitstream error
 	}
 
 	/**
 	 * Gets Pixy2 camera framerate between 2-62fps
 	 * 
-	 * @return Positive number for framerate or negative for Pixy2 error code
+	 * @return Framerate or Pixy2 error code
 	 */
 	public byte getFPS() {
 		int res;
@@ -669,23 +686,37 @@ public class Pixy2 {
 		if (receivePacket() == 0 && type == PIXY_TYPE_RESPONSE_RESULT && length == 4) {
 			res = ((buffer[3] & 0xff) << 24) | ((buffer[2] & 0xff) << 16) | ((buffer[1] & 0xff) << 8)
 					| (buffer[0] & 0xff);
-			return (byte) res;
+			return (byte) res; // Success
 		} else
-			return PIXY_RESULT_ERROR; // some kind of bitstream error
+			return PIXY_RESULT_ERROR; // Some kind of bitstream error
 	}
 
+	// Checksum holder class
 	public class Checksum {
 
 		int cs = 0;
 
+		/**
+		 * Adds byte to checksum
+		 * 
+		 * @param b Byte to be added
+		 */
 		public void updateChecksum(int b) {
 			cs += b;
 		}
 
+		/**
+		 * Returns calculated checksum
+		 * 
+		 * @return Calculated checksum
+		 */
 		public int getChecksum() {
 			return cs;
 		}
 
+		/**
+		 * Resets checksum
+		 */
 		public void reset() {
 			cs = 0;
 		}

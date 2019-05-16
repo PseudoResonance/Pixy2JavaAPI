@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
  * 
  * https://github.com/PseudoResonance/Pixy2JavaAPI
  * 
- * @author PseudoResonance
+ * @author PseudoResonance (Josh Otake)
  *
  *         ORIGINAL HEADER -
  *         https://github.com/charmedlabs/pixy2/blob/master/src/host/arduino/libraries/Pixy2/Pixy2CCC.h
@@ -55,7 +55,7 @@ public class Pixy2CCC {
 	public final static byte CCC_SIG7 = 0x40;
 	public final static byte CCC_COLOR_CODES = (byte) 0x80;
 
-	public final static byte CCC_SIG_ALL = (byte) 0xff; // all bits or'ed together
+	public final static byte CCC_SIG_ALL = (byte) 0xff; // All bits or'ed together
 
 	private final Pixy2 pixy;
 
@@ -71,7 +71,9 @@ public class Pixy2CCC {
 	}
 
 	/**
-	 * Gets signature blocks from Pixy2
+	 * <p>Gets signature {@link Block}s from Pixy2</p>
+	 * 
+	 * <p>Returned data should be retrieved from the cache with {@link #getBlocks()}</p>
 	 * 
 	 * @param wait      Whether to wait for Pixy2 if data is not available
 	 * @param sigmap    Sigmap to look for
@@ -83,17 +85,19 @@ public class Pixy2CCC {
 		long start = System.currentTimeMillis();
 
 		while (true) {
-			// fill in request data
+			// Fill in request data
 			pixy.bufferPayload[0] = (byte) sigmap;
 			pixy.bufferPayload[1] = (byte) maxBlocks;
 			pixy.length = 2;
 			pixy.type = CCC_REQUEST_BLOCKS;
 
-			// send request
+			// Send request
 			pixy.sendPacket();
 			if (pixy.receivePacket() == 0) {
 				if (pixy.type == CCC_RESPONSE_BLOCKS) {
+					// Clears current cache of blocks
 					blocks.clear();
+					// Iterates through and creates block objects from buffer
 					for (int i = 0; i + 13 < pixy.length; i += 14) {
 						Block b = new Block(((pixy.buffer[i + 1] & 0xff) << 8) | (pixy.buffer[i] & 0xff),
 								((pixy.buffer[i + 3] & 0xff) << 8) | (pixy.buffer[i + 2] & 0xff),
@@ -104,22 +108,22 @@ public class Pixy2CCC {
 								(pixy.buffer[i + 12] & 0xff), (pixy.buffer[i + 13] & 0xff));
 						blocks.add(b);
 					}
-					return blocks.size();
+					return blocks.size(); // Success
 				} else if (pixy.type == Pixy2.PIXY_TYPE_RESPONSE_ERROR) {
-					// deal with busy and program changing states from Pixy (we'll wait)
+					// Deal with busy and program changing states from Pixy2 (we'll wait)
 					if (pixy.buffer[0] == Pixy2.PIXY_RESULT_BUSY) {
 						if (!wait)
-							return Pixy2.PIXY_RESULT_BUSY; // new data not available yet
+							return Pixy2.PIXY_RESULT_BUSY; // New data not available yet
 					} else if (pixy.buffer[0] == Pixy2.PIXY_RESULT_PROG_CHANGING) {
 						return pixy.buffer[0];
 					}
 
 				}
 			} else {
-				return Pixy2.PIXY_RESULT_ERROR; // some kind of bitstream error
+				return Pixy2.PIXY_RESULT_ERROR; // Some kind of bitstream error
 			}
 			if (System.currentTimeMillis() - start > 500) {
-				return Pixy2.PIXY_RESULT_ERROR; // timeout to prevent lockup
+				return Pixy2.PIXY_RESULT_ERROR; // Timeout to prevent lockup
 			}
 			// If we're waiting for frame data, don't thrash Pixy with requests.
 			// We can give up half a millisecond of latency (worst case)
@@ -131,7 +135,9 @@ public class Pixy2CCC {
 	}
 
 	/**
-	 * Gets signature blocks from cache
+	 * <p>Gets ArrayList of signature blocks from cache</p>
+	 * 
+	 * <p>{@link #getBlocks(boolean, int, int)} must be executed first to get the data actual from Pixy2</p>
 	 * 
 	 * @return Pixy2 signature Blocks
 	 */
@@ -174,9 +180,9 @@ public class Pixy2CCC {
 		}
 
 		/**
-		 * Creats a string of signature data
+		 * Returns a string of signature block data
 		 * 
-		 * @return String of signature data
+		 * @return String of signature block data
 		 */
 		public String toString() {
 			int i, j;
@@ -185,8 +191,8 @@ public class Pixy2CCC {
 			boolean flag;
 			String out = "";
 			if (signature > CCC_MAX_SIGNATURE) {
-				// color code! (CC)
-				// convert signature number to an octal string
+				// Color code! (CC)
+				// Convert signature number to an octal string
 				for (i = 12, j = 0, flag = false; i >= 0; i -= 3) {
 					d = (signature >> i) & 0x07;
 					if (d > 0 && !flag)
@@ -199,7 +205,7 @@ public class Pixy2CCC {
 						+ " width: " + width + " height: " + height + " angle: " + angle + " index: " + index + " age: "
 						+ age;
 
-			} else // regular block. Note, angle is always zero, so no need to print
+			} else // Regular block. Note, angle is always zero, so no need to print
 				out = "sig: " + signature + " x: " + x + " y: " + y + " width: " + width + " height: " + height
 						+ " index: " + index + " age: " + age;
 			return out;

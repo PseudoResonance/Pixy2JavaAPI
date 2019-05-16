@@ -10,7 +10,7 @@ import io.github.pseudoresonance.pixy2api.Pixy2.Checksum;
  * 
  * https://github.com/PseudoResonance/Pixy2JavaAPI
  * 
- * @author PseudoResonance
+ * @author PseudoResonance (Josh Otake)
  * 
  *         ORIGINAL HEADER -
  *         https://github.com/charmedlabs/pixy2/blob/master/src/host/arduino/libraries/Pixy2/Pixy2.h
@@ -120,6 +120,7 @@ public class SPILink implements Link {
 	 * @return Length of value sent
 	 */
 	public int send(byte[] buffer, int length) {
-		return spi.write(buffer, length);
+		spi.write(buffer, length);
+		return length;
 	}
 }

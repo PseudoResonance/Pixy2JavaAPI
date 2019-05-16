@@ -9,10 +9,11 @@ import io.github.pseudoresonance.pixy2api.Pixy2.Checksum;
  * 
  * https://github.com/PseudoResonance/Pixy2JavaAPI
  * 
- * @author PseudoResonance
+ * @author PseudoResonance (Josh Otake)
  */
 
 public interface Link {
+	
 	/**
 	 * Opens link
 	 *

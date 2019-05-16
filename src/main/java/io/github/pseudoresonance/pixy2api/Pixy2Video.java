@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * 
  * https://github.com/PseudoResonance/Pixy2JavaAPI
  * 
- * @author PseudoResonance
+ * @author PseudoResonance (Josh Otake)
  *
  *         ORIGINAL HEADER -
  *         https://github.com/charmedlabs/pixy2/blob/master/src/host/arduino/libraries/Pixy2/Pixy2Video.h
@@ -60,6 +60,8 @@ public class Pixy2Video {
 	 * @return Pixy2 error code
 	 */
 	public int getRGB(int x, int y, RGB rgb, boolean saturate) {
+		long start = System.currentTimeMillis();
+
 		while (true) {
 			pixy.bufferPayload[0] = (byte) (x & 0xff);
 			pixy.bufferPayload[1] = (byte) ((x >> 8) & 0xff);
@@ -72,16 +74,19 @@ public class Pixy2Video {
 			if (pixy.receivePacket() == 0) {
 				if (pixy.type == Pixy2.PIXY_TYPE_RESPONSE_RESULT && pixy.length == 4) {
 					rgb.setRGB(pixy.buffer[0], pixy.buffer[1], pixy.buffer[2]);
-					return 0;
+					return 0; // Success
 				} else if (pixy.type == Pixy2.PIXY_TYPE_RESPONSE_ERROR
 						&& pixy.buffer[0] == Pixy2.PIXY_RESULT_PROG_CHANGING) {
-					// deal with program changing
+					// Deal with program changing by waiting
 					try {
 						TimeUnit.MICROSECONDS.sleep(500);
 					} catch (InterruptedException e) {
-					} // don't be a drag
+					}
 					continue;
 				}
+			}
+			if (System.currentTimeMillis() - start > 500) {
+				return Pixy2.PIXY_RESULT_ERROR; // Timeout to prevent lockup
 			}
 			return Pixy2.PIXY_RESULT_ERROR;
 		}

@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * 
  * https://github.com/PseudoResonance/Pixy2JavaAPI
  * 
- * @author PseudoResonance
+ * @author PseudoResonance (Josh Otake)
  *
  *         ORIGINAL HEADER -
  *         https://github.com/charmedlabs/pixy2/blob/master/src/host/arduino/libraries/Pixy2/Pixy2Line.h
@@ -50,7 +50,7 @@ public class Pixy2Line {
 	public final static byte LINE_MODE_MANUAL_SELECT_VECTOR = 0x02;
 	public final static byte LINE_MODE_WHITE_LINE = (byte) 0x80;
 
-	// features
+	// Features
 	public final static byte LINE_VECTOR = 0x01;
 	public final static byte LINE_INTERSECTION = 0x02;
 	public final static byte LINE_BARCODE = 0x04;
@@ -79,7 +79,9 @@ public class Pixy2Line {
 	}
 
 	/**
-	 * Gets all features from Pixy2
+	 * <p>Gets all features from Pixy2</p>
+	 * 
+	 * <p>Returned data should be retrieved from the cache with {@link #getVectors()}, {@link #getIntersections()} or {@link #getBarcodes()}</p>
 	 * 
 	 * @return Pixy2 error code
 	 */
@@ -88,8 +90,10 @@ public class Pixy2Line {
 	}
 
 	/**
-	 * Gets the main features from the Pixy2. This is a more constrained line
-	 * tracking algorithm.
+	 * <p>Gets the main features from the Pixy2. This is a more constrained line
+	 * tracking algorithm.</p>
+	 * 
+	 * <p>Returned data should be retrieved from the cache with {@link #getVectors()}, {@link #getIntersections()} or {@link #getBarcodes()}</p>
 	 * 
 	 * @return Pixy2 error code
 	 */
@@ -98,7 +102,9 @@ public class Pixy2Line {
 	}
 
 	/**
-	 * Gets specified features from Pixy2
+	 * <p>Gets specified features from Pixy2</p>
+	 * 
+	 * <p>Returned data should be retrieved from the cache with {@link #getVectors()}, {@link #getIntersections()} or {@link #getBarcodes()}</p>
 	 * 
 	 * @param type     Type of features to get
 	 * @param features Features to get
@@ -118,22 +124,23 @@ public class Pixy2Line {
 		long start = System.currentTimeMillis();
 
 		while (true) {
-			// fill in request data
+			// Fill in request data
 			pixy.length = 2;
 			pixy.type = LINE_REQUEST_GET_FEATURES;
 			pixy.bufferPayload[0] = type;
 			pixy.bufferPayload[1] = features;
 
-			// send request
+			// Send request
 			pixy.sendPacket();
 			if (pixy.receivePacket() == 0) {
 				if (pixy.type == LINE_RESPONSE_GET_FEATURES) {
-					// parse line response
+					// Parse line response
 					for (offset = 0, res = 0; pixy.length > offset; offset += fsize + 2) {
 						ftype = pixy.buffer[offset];
 						fsize = pixy.buffer[offset + 1];
 						fdata = Arrays.copyOfRange(pixy.buffer, offset + 2, pixy.length);
 						if (ftype == LINE_VECTOR) {
+							// Parse line data
 							vectors = new Vector[(int) Math.floor(fdata.length / 6)];
 							for (int i = 0; (i + 1) * 6 <= fdata.length; i++) {
 								vectors[i] = new Vector(fdata[(6 * i)] & 0xFF, fdata[(6 * i) + 1] & 0xFF,
@@ -142,6 +149,7 @@ public class Pixy2Line {
 							}
 							res |= LINE_VECTOR;
 						} else if (ftype == LINE_INTERSECTION) {
+							// Parse intersection data
 							int size = 4 + (4 * LINE_MAX_INTERSECTION_LINES);
 							intersections = new Intersection[(int) Math
 									.floor(fdata.length / (4 + (4 * LINE_MAX_INTERSECTION_LINES)))];
@@ -162,6 +170,7 @@ public class Pixy2Line {
 							}
 							res |= LINE_INTERSECTION;
 						} else if (ftype == LINE_BARCODE) {
+							// Parse barcode data
 							barcodes = new Barcode[(int) Math.floor(fdata.length / 4)];
 							for (int i = 0; (i + 1) * 4 <= fdata.length; i++) {
 								barcodes[i] = new Barcode(fdata[(4 * i)] & 0xFF, fdata[(4 * i) + 1] & 0xFF,
@@ -169,21 +178,21 @@ public class Pixy2Line {
 							}
 							res |= LINE_BARCODE;
 						} else
-							break; // parse error
+							break; // Parse error
 					}
-					return res;
+					return res; // Success
 				} else if (pixy.type == Pixy2.PIXY_TYPE_RESPONSE_ERROR) {
-					// if it's not a busy response, return the error
+					// If it's not a busy response, return the error
 					if (pixy.buffer[0] != Pixy2.PIXY_RESULT_BUSY)
 						return pixy.buffer[0];
-					else if (!wait) // we're busy
-						return Pixy2.PIXY_RESULT_BUSY; // new data not available yet
+					else if (!wait) // We're busy
+						return Pixy2.PIXY_RESULT_BUSY; // New data not available yet
 				}
 			} else
-				return Pixy2.PIXY_RESULT_ERROR; // some kind of bitstream error
+				return Pixy2.PIXY_RESULT_ERROR; // Some kind of bitstream error
 
 			if (System.currentTimeMillis() - start > 500) {
-				return Pixy2.PIXY_RESULT_ERROR; // timeout to prevent lockup
+				return Pixy2.PIXY_RESULT_ERROR; // Timeout to prevent lockup
 			}
 			// If we're waiting for frame data, don't thrash Pixy with requests.
 			// We can give up half a millisecond of latency (worst case)
@@ -195,7 +204,9 @@ public class Pixy2Line {
 	}
 
 	/**
-	 * Gets detected lines from cache
+	 * <p>Gets detected lines from cache</p>
+	 * 
+	 * <p>{@link #getFeatures(byte, byte, boolean)} must be executed first to get the data actual from Pixy2</p>
 	 * 
 	 * @return Pixy2 Lines
 	 */
@@ -204,7 +215,9 @@ public class Pixy2Line {
 	}
 
 	/**
-	 * Gets detected intersections from cache
+	 * <p>Gets detected intersections from cache</p>
+	 * 
+	 * <p>{@link #getFeatures(byte, byte, boolean)} must be executed first to get the data actual from Pixy2</p>
 	 * 
 	 * @return Pixy2 Intersectionss
 	 */
@@ -213,7 +226,9 @@ public class Pixy2Line {
 	}
 
 	/**
-	 * Gets detected barcodes from cache
+	 * <p>Gets detected barcodes from cache</p>
+	 * 
+	 * <p>{@link #getFeatures(byte, byte, boolean)} must be executed first to get the data actual from Pixy2</p>
 	 * 
 	 * @return Pixy2 Barcodes
 	 */
@@ -224,7 +239,7 @@ public class Pixy2Line {
 	/**
 	 * Sets Pixy2 line tracking mode
 	 * 
-	 * @param mode Pixy2 mode
+	 * @param mode Pixy2 line tracking mode
 	 * 
 	 * @return Pixy2 error code
 	 */
@@ -241,9 +256,9 @@ public class Pixy2Line {
 		if (pixy.receivePacket() == 0 && pixy.type == Pixy2.PIXY_TYPE_RESPONSE_RESULT && pixy.length == 4) {
 			res = ((pixy.buffer[3] & 0xff) << 24) | ((pixy.buffer[2] & 0xff) << 16) | ((pixy.buffer[1] & 0xff) << 8)
 					| (pixy.buffer[0] & 0xff);
-			return (byte) res;
+			return (byte) res; // Success
 		} else
-			return Pixy2.PIXY_RESULT_ERROR; // some kind of bitstream error
+			return Pixy2.PIXY_RESULT_ERROR; // Some kind of bitstream error
 	}
 
 	/**
@@ -264,9 +279,9 @@ public class Pixy2Line {
 		if (pixy.receivePacket() == 0 && pixy.type == Pixy2.PIXY_TYPE_RESPONSE_RESULT && pixy.length == 4) {
 			res = ((pixy.buffer[3] & 0xff) << 24) | ((pixy.buffer[2] & 0xff) << 16) | ((pixy.buffer[1] & 0xff) << 8)
 					| (pixy.buffer[0] & 0xff);
-			return (byte) res;
+			return (byte) res; // Success
 		} else
-			return Pixy2.PIXY_RESULT_ERROR; // some kind of bitstream error
+			return Pixy2.PIXY_RESULT_ERROR; // Some kind of bitstream error
 	}
 
 	/**
@@ -287,9 +302,9 @@ public class Pixy2Line {
 		if (pixy.receivePacket() == 0 && pixy.type == Pixy2.PIXY_TYPE_RESPONSE_RESULT && pixy.length == 4) {
 			res = ((pixy.buffer[3] & 0xff) << 24) | ((pixy.buffer[2] & 0xff) << 16) | ((pixy.buffer[1] & 0xff) << 8)
 					| (pixy.buffer[0] & 0xff);
-			return (byte) res;
+			return (byte) res; // Success
 		} else
-			return Pixy2.PIXY_RESULT_ERROR; // some kind of bitstream error
+			return Pixy2.PIXY_RESULT_ERROR; // Some kind of bitstream error
 	}
 
 	/**
@@ -309,9 +324,9 @@ public class Pixy2Line {
 		if (pixy.receivePacket() == 0 && pixy.type == Pixy2.PIXY_TYPE_RESPONSE_RESULT && pixy.length == 4) {
 			res = ((pixy.buffer[3] & 0xff) << 24) | ((pixy.buffer[2] & 0xff) << 16) | ((pixy.buffer[1] & 0xff) << 8)
 					| (pixy.buffer[0] & 0xff);
-			return (byte) res;
+			return (byte) res; // Success
 		} else
-			return Pixy2.PIXY_RESULT_ERROR; // some kind of bitstream error
+			return Pixy2.PIXY_RESULT_ERROR; // Some kind of bitstream error
 	}
 
 	/**
@@ -328,9 +343,9 @@ public class Pixy2Line {
 		if (pixy.receivePacket() == 0 && pixy.type == Pixy2.PIXY_TYPE_RESPONSE_RESULT && pixy.length == 4) {
 			res = ((pixy.buffer[3] & 0xff) << 24) | ((pixy.buffer[2] & 0xff) << 16) | ((pixy.buffer[1] & 0xff) << 8)
 					| (pixy.buffer[0] & 0xff);
-			return (byte) res;
+			return (byte) res; // Success
 		} else
-			return Pixy2.PIXY_RESULT_ERROR; // some kind of bitstream error
+			return Pixy2.PIXY_RESULT_ERROR; // Some kind of bitstream error
 	}
 
 	public class Vector {
@@ -435,6 +450,22 @@ public class Pixy2Line {
 		}
 
 		/**
+		 * Prints intersection line data to console
+		 */
+		public void print() {
+			System.out.println(toString());
+		}
+
+		/**
+		 * Returns a string of intersection line data
+		 * 
+		 * @return String of intersection line data
+		 */
+		public String toString() {
+			return "intersection line: index: " + index + " reserved: " + reserved + " angle: " + angle;
+		}
+
+		/**
 		 * @return IntersectionLine index
 		 */
 		public int getIndex() {
@@ -488,6 +519,20 @@ public class Pixy2Line {
 				IntersectionLine line = lines[i];
 				System.out.println(" " + i + " index: " + line.getIndex() + " angle: " + line.getAngle());
 			}
+		}
+
+		/**
+		 * Returns a string of intersection data
+		 * 
+		 * @return String of intersection data
+		 */
+		public String toString() {
+			String ret = "intersection: (" + x + " " + y + ")";
+			for (int i = 0; i < lines.length; i++) {
+				IntersectionLine line = lines[i];
+				ret += " line: " + i + " index: " + line.getIndex() + " angle: " + line.getAngle();
+			}
+			return ret;
 		}
 
 		/**
