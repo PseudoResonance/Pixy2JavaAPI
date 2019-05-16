@@ -1,9 +1,9 @@
 # Pixy2JavaAPI
 Pixy2 API ported to Java for FIRST Robotics RoboRIO
 
-Supported link types: SPI, I2C (Untested), UART/Serial (Untested)
+Port by PseudoResonance (Josh Otake) with help from other various contributors.
 
-New link types can be easily added by implementing Link
+Thank you for your support and usage of this API!
 
 [Original Pixy2 Code for C++ Arduino](https://github.com/charmedlabs/pixy2/tree/master/src/host/arduino/libraries/Pixy2)
 
@@ -15,7 +15,7 @@ The maven repository is located at: https://nexus.otake.pw/repository/maven-publ
 
 Add `maven { url 'https://nexus.otake.pw/repository/maven-public/' }` under `repositories`
 
-Add `compile 'pw.otake.pseudoresonance:pixy2-java-api:1.1'` under `dependencies` Replace `1.1` with the current version of the API.
+Add `compile 'pw.otake.pseudoresonance:pixy2-java-api:1.3.4'` under `dependencies` Replace `1.3.4` with the current version of the API.
 
 Your `build.gradle` should resemble this:
 
@@ -42,10 +42,18 @@ dependencies {
 ## Using the API
 First create a Pixy2 camera object with `Pixy2 pixy = Pixy2.createInstance(link)` and supply the link type of your choosing. Next, initialize the Pixy2 camera with `pixy.init(arg)`. You can either omit arg, your add a value based on the link type.
 
-The Pixy2 can now be called on with the various provided methods as outlined in the documentation and on the Pixy2 website.
+The Pixy2 can now be called on with the various provided methods as outlined in the documentation included in the code and on the Pixy2 website.
+
+Wiki with more detailed usage instructions and example code will be added in the future.
 
 ---
-## Connecting Pixy2 to RoboRIO
+## Supported Links to Communicate with Pixy
+SPI, I2C (Untested), UART/Serial (Untested)
+
+New link types can be easily added for future hardware, or other Java-based projects by implementing [Link](https://github.com/PseudoResonance/Pixy2JavaAPI/blob/master/src/main/java/io/github/pseudoresonance/pixy2api/links/Link.java)
+
+---
+## Wiring Pixy2 to RoboRIO
 SPI is the recommended link type due to it's higher data transfer rate as well as better implementation in the WPILib API which helps with efficiency.
 
 ### SPI
