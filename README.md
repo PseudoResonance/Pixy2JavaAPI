@@ -40,7 +40,7 @@ dependencies {
 
 ---
 ## Using the API
-First create a Pixy2 camera object with `Pixy2 pixy = Pixy2.createInstance(link)` and supply the link type of your choosing. Next, initialize the Pixy2 camera with `pixy.init(arg)`. You can either omit arg, your add a value based on the link type.
+First create a Pixy2 camera object with `Pixy2 pixy = Pixy2.createInstance(link)` and supply the link type of your choosing. Next, initialize the Pixy2 camera with `pixy.init(arg)`. You can either omit arg, or add a value based on the link type.
 
 The Pixy2 can now be called on with the various provided methods as outlined in the documentation included in the code and on the Pixy2 website.
 
@@ -76,7 +76,7 @@ SPI is the recommended link type due to it's higher data transfer rate as well a
 | 6 | ⏚ Ground |
 | 9 | SDA |
 
-**NOTE**: The RoboRIO does not have a 5V output for I2C, and thus, the 5V must be sourced elsewhere, such as from the VRM.
+**NOTE**: The RoboRIO does not have a 5V output for I2C, and thus, the 5V must be sourced elsewhere, such as from the VRM, or another 5V pin.
 
 ### UART/Serial/RS-232
 | Pixy2 Port | RoboRIO Port |
@@ -86,7 +86,7 @@ SPI is the recommended link type due to it's higher data transfer rate as well a
 | 4 | TXD |
 | 6 | ⏚ Ground |
 
-**NOTE**: The RoboRIO does not have a 5V output for UART/Serial/RS-232, and thus, the 5V must be sourced elsewhere, such as from the VRM.
+**NOTE**: The RoboRIO does not have a 5V output for UART/Serial/RS-232, and thus, the 5V must be sourced elsewhere, such as from the VRM, or another 5V pin.
 
 #### Pixy2 Pinout
 ![Pixy2 Pinout](https://docs.pixycam.com/wiki/lib/exe/fetch.php?w=640&tok=f1a03d&media=wiki:v2:image_248_2.jpg "Pixy2 Pinout")
