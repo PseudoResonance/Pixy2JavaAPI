@@ -29,7 +29,7 @@ repositories {
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
 dependencies {
-    compile 'pw.otake.pseudoresonance:pixy2-java-api:1.1'
+    compile 'pw.otake.pseudoresonance:pixy2-java-api:1.3.4'
     compile wpi.deps.wpilib()
     compile wpi.deps.vendor.java()
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
