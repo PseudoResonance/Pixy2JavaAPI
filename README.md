@@ -7,6 +7,8 @@ Thank you for your support and usage of this API!
 
 [Original Pixy2 Code for C++ Arduino](https://github.com/charmedlabs/pixy2/tree/master/src/host/arduino/libraries/Pixy2)
 
+Please read the wiki for more detailed information about Pixy2JavaAPI!
+
 ---
 ## Installing the API
 To install the API, it can either be downloaded and copied directly into the project, or you can use it with Gradle/Maven.
@@ -44,13 +46,13 @@ First create a Pixy2 camera object with `Pixy2 pixy = Pixy2.createInstance(link)
 
 The Pixy2 can now be called on with the various provided methods as outlined in the documentation included in the code and on the Pixy2 website.
 
-Wiki with more detailed usage instructions and example code will be added in the future.
+Please read the [wiki](https://github.com/PseudoResonance/Pixy2JavaAPI/wiki/Using-the-API) for more information about how to use the API, including examples.
 
 ---
 ## Supported Links to Communicate with Pixy
 SPI, I2C (Untested), UART/Serial (Untested)
 
-New link types can be easily added for future hardware, or other Java-based projects by implementing [Link](https://github.com/PseudoResonance/Pixy2JavaAPI/blob/master/src/main/java/io/github/pseudoresonance/pixy2api/links/Link.java)
+New link types can be easily added to support future hardware, or other Java-based projects by implementing [Link](https://github.com/PseudoResonance/Pixy2JavaAPI/blob/master/src/main/java/io/github/pseudoresonance/pixy2api/links/Link.java)
 
 ---
 ## Wiring Pixy2 to RoboRIO
