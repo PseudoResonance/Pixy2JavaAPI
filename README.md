@@ -7,7 +7,7 @@ Thank you for your support and usage of this API!
 
 [Original Pixy2 Code for C++ Arduino](https://github.com/charmedlabs/pixy2/tree/master/src/host/arduino/libraries/Pixy2)
 
-Please read the wiki for more detailed information about Pixy2JavaAPI!
+Please read the [wiki](https://github.com/PseudoResonance/Pixy2JavaAPI/wiki) for more detailed information about Pixy2JavaAPI!
 
 ---
 ## Installing the API
