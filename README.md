@@ -1,7 +1,6 @@
 # Pixy2JavaAPI
 
 [![Build Status](https://ci.otake.pw/buildStatus/icon?job=Pixy2JavaAPI)](https://ci.otake.pw/job/Pixy2JavaAPI/)
-
 [Latest Javadocs](https://ci.otake.pw/job/Pixy2JavaAPI/javadoc/overview-summary.html)
 
 Pixy2 API ported to Java for FIRST Robotics RoboRIO
