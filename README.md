@@ -1,11 +1,17 @@
 # Pixy2JavaAPI
+
+[![Build Status](https://ci.otake.pw/buildStatus/icon?job=Pixy2JavaAPI&subject=Jenkins)](https://ci.otake.pw/job/Pixy2JavaAPI/)
+[Latest Javadocs](https://ci.otake.pw/job/Pixy2JavaAPI/javadoc/index.html?overview-tree.html)
+
 Pixy2 API ported to Java for FIRST Robotics RoboRIO
 
-Supported link types: SPI, I2C (Untested), UART/Serial (Untested)
+Port by PseudoResonance (Josh Otake) with help from other various contributors.
 
-New link types can be easily added by implementing Link
+Thank you for your support and usage of this API!
 
 [Original Pixy2 Code for C++ Arduino](https://github.com/charmedlabs/pixy2/tree/master/src/host/arduino/libraries/Pixy2)
+
+Please read the [wiki](https://github.com/PseudoResonance/Pixy2JavaAPI/wiki) for more detailed information about Pixy2JavaAPI!
 
 ---
 ## Installing the API
@@ -15,7 +21,7 @@ The maven repository is located at: https://nexus.otake.pw/repository/maven-publ
 
 Add `maven { url 'https://nexus.otake.pw/repository/maven-public/' }` under `repositories`
 
-Add `compile 'pw.otake.pseudoresonance:pixy2-java-api:1.1'` under `dependencies` Replace `1.1` with the current version of the API.
+Add `compile 'pw.otake.pseudoresonance:pixy2-java-api:1.3.4'` under `dependencies` Replace `1.3.4` with the current version of the API.
 
 Your `build.gradle` should resemble this:
 
@@ -29,7 +35,7 @@ repositories {
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
 dependencies {
-    compile 'pw.otake.pseudoresonance:pixy2-java-api:1.1'
+    compile 'pw.otake.pseudoresonance:pixy2-java-api:1.3.4'
     compile wpi.deps.wpilib()
     compile wpi.deps.vendor.java()
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
@@ -40,12 +46,20 @@ dependencies {
 
 ---
 ## Using the API
-First create a Pixy2 camera object with `Pixy2 pixy = Pixy2.createInstance(link)` and supply the link type of your choosing. Next, initialize the Pixy2 camera with `pixy.init(arg)`. You can either omit arg, your add a value based on the link type.
+First create a Pixy2 camera object with `Pixy2 pixy = Pixy2.createInstance(link)` and supply the link type of your choosing. Next, initialize the Pixy2 camera with `pixy.init(arg)`. You can either omit arg, or add a value based on the link type.
 
-The Pixy2 can now be called on with the various provided methods as outlined in the documentation and on the Pixy2 website.
+The Pixy2 can now be called on with the various provided methods as outlined in the documentation included in the code and on the Pixy2 website.
+
+Please read the [wiki](https://github.com/PseudoResonance/Pixy2JavaAPI/wiki/Using-the-API) for more information about how to use the API, including examples.
 
 ---
-## Connecting Pixy2 to RoboRIO
+## Supported Links to Communicate with Pixy
+SPI, I2C (Untested), UART/Serial (Untested)
+
+New link types can be easily added to support future hardware, or other Java-based projects by implementing [Link](https://github.com/PseudoResonance/Pixy2JavaAPI/blob/master/src/main/java/io/github/pseudoresonance/pixy2api/links/Link.java)
+
+---
+## Wiring Pixy2 to RoboRIO
 SPI is the recommended link type due to it's higher data transfer rate as well as better implementation in the WPILib API which helps with efficiency.
 
 ### SPI
@@ -68,7 +82,7 @@ SPI is the recommended link type due to it's higher data transfer rate as well a
 | 6 | ⏚ Ground |
 | 9 | SDA |
 
-**NOTE**: The RoboRIO does not have a 5V output for I2C, and thus, the 5V must be sourced elsewhere, such as from the VRM.
+**NOTE**: The RoboRIO does not have a 5V output for I2C, and thus, the 5V must be sourced elsewhere, such as from the VRM, or another 5V pin.
 
 ### UART/Serial/RS-232
 | Pixy2 Port | RoboRIO Port |
@@ -78,7 +92,7 @@ SPI is the recommended link type due to it's higher data transfer rate as well a
 | 4 | TXD |
 | 6 | ⏚ Ground |
 
-**NOTE**: The RoboRIO does not have a 5V output for UART/Serial/RS-232, and thus, the 5V must be sourced elsewhere, such as from the VRM.
+**NOTE**: The RoboRIO does not have a 5V output for UART/Serial/RS-232, and thus, the 5V must be sourced elsewhere, such as from the VRM, or another 5V pin.
 
 #### Pixy2 Pinout
 ![Pixy2 Pinout](https://docs.pixycam.com/wiki/lib/exe/fetch.php?w=640&tok=f1a03d&media=wiki:v2:image_248_2.jpg "Pixy2 Pinout")
