@@ -18,8 +18,7 @@ javadoc {
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
 dependencies {
-    implementation wpi.deps.wpilib()
-    implementation wpi.deps.vendor.java()
+    implementation "edu.wpi.first.wpilibj:wpilibj-java:${wpi.wpilibVersion}".toString()
 }
 
 ext {
