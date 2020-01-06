@@ -75,8 +75,8 @@ publishing {
             def snapshotsRepoUrl = "http://192.168.0.20:8081/repository/maven-snapshots/"
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials {
-                username = project.hasProperty('nexus_username') ? nexus_username : (System.getenv('NEXUS_USERNAME') != null ? System..getenv('NEXUS_USERNAME') : '')
-                password = project.hasProperty('nexus_password') ? nexus_password : (System.getenv('NEXUS_PASSWORD') != null ? System..getenv('NEXUS_PASSWORD') : '')
+                username = project.hasProperty('nexus_username') ? nexus_username : (System.getenv('NEXUS_USERNAME') != null ? System.getenv('NEXUS_USERNAME') : '')
+                password = project.hasProperty('nexus_password') ? nexus_password : (System.getenv('NEXUS_PASSWORD') != null ? System.getenv('NEXUS_PASSWORD') : '')
             }
         }
     }
