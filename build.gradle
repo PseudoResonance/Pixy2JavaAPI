@@ -30,11 +30,13 @@ jar {
 }
 
 task sourceJar(type: Jar, dependsOn: classes) {
+	baseName 'pixy2-java-api'
     classifier 'sources'
     from sourceSets.main.allSource
 }
  
 task javadocJar(type: Jar, dependsOn: javadoc) {
+	baseName 'pixy2-java-api'
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
