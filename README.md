@@ -21,28 +21,32 @@ The maven repository is located at: https://nexus.otake.pw/repository/maven-publ
 
 Add `maven { url 'https://nexus.otake.pw/repository/maven-public/' }` under `repositories`
 
-Add `compile 'pw.otake.pseudoresonance:pixy2-java-api:1.3.4'` under `dependencies` Replace `1.3.4` with the current version of the API.
+Add `implementation 'pw.otake.pseudoresonance:pixy2-java-api:1.3.5'` under `dependencies` Replace `1.3.5` with the current version of the API.
 
 Your `build.gradle` should resemble this:
 
 ```gradle
 // Maven central needed for JUnit
 repositories {
-    mavenCentral()
     maven { url 'https://nexus.otake.pw/repository/maven-public/' }
 }
 
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
 dependencies {
-    compile 'pw.otake.pseudoresonance:pixy2-java-api:1.3.4'
-    compile wpi.deps.wpilib()
-    compile wpi.deps.vendor.java()
+    implementation 'pw.otake.pseudoresonance:pixy2-java-api:1.3.5'
+    implementation wpi.deps.wpilib()
+    nativeZip wpi.deps.wpilibJni(wpi.platforms.roborio)
+    nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
+    implementation wpi.deps.vendor.java()
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
+    simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
 }
 ```
+
+If there are issues using the repository, or you don't want to use it, the files can also be copied directly into the project and used, however I ask that you leave the file headers intact, so that others can find the project.
 
 ---
 ## Using the API
