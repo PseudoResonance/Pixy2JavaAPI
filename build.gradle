@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2020.1.2"
+    id "edu.wpi.first.GradleRIO" version "2020.2.2"
     id "maven-publish"
 }
 
@@ -49,7 +49,7 @@ publishing {
             artifact javadocJar
         	groupId = 'pw.otake.pseudoresonance'
             artifactId = 'pixy2-java-api'
-            version = '1.3.5'
+            version = '1.4'
             pom {
                 name = 'Pixy2JavaAPI'
                 description = 'Java port of Pixy2 API for FIRST Robotics'

@@ -51,6 +51,21 @@ public class Pixy2Video {
 	/**
 	 * Gets average RGB value at 5x5 area around specified coordinates in the image
 	 * 
+	 * <p>Defaults to saturating response color</p>
+	 * 
+	 * @param x        X value
+	 * @param y        Y value
+	 * @param rgb      RGB container to return values in
+	 * 
+	 * @return Pixy2 error code
+	 */
+	public int getRGB(int x, int y, RGB rgb) {
+		return getRGB(x, y, rgb, true);
+	}
+
+	/**
+	 * Gets average RGB value at 5x5 area around specified coordinates in the image
+	 * 
 	 * @param x        X value
 	 * @param y        Y value
 	 * @param rgb      RGB container to return values in
@@ -92,7 +107,7 @@ public class Pixy2Video {
 		}
 	}
 
-	public class RGB {
+	public static class RGB {
 
 		int r, g, b;
 

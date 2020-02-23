@@ -81,7 +81,9 @@ public class Pixy2Line {
 	/**
 	 * <p>Gets all features from Pixy2</p>
 	 * 
-	 * <p>Returned data should be retrieved from the cache with {@link #getVectors()}, {@link #getIntersections()} or {@link #getBarcodes()}</p>
+	 * <p>Defaults to getting all available features and waiting for a response</p>
+	 * 
+	 * <p>Returned data should be retrieved from the cache with {@link #getVectorCache()}, {@link #getIntersectionCache()} or {@link #getBarcodeCache()}</p>
 	 * 
 	 * @return Pixy2 error code
 	 */
@@ -93,7 +95,9 @@ public class Pixy2Line {
 	 * <p>Gets the main features from the Pixy2. This is a more constrained line
 	 * tracking algorithm.</p>
 	 * 
-	 * <p>Returned data should be retrieved from the cache with {@link #getVectors()}, {@link #getIntersections()} or {@link #getBarcodes()}</p>
+	 * <p>Defaults to getting all available features and waiting for a response</p>
+	 * 
+	 * <p>Returned data should be retrieved from the cache with {@link #getVectorCache()}, {@link #getIntersectionCache()} or {@link #getBarcodeCache()}</p>
 	 * 
 	 * @return Pixy2 error code
 	 */
@@ -102,9 +106,69 @@ public class Pixy2Line {
 	}
 
 	/**
+	 * <p>Gets all features from Pixy2</p>
+	 * 
+	 * <p>Defaults to waiting for a response</p>
+	 * 
+	 * <p>Returned data should be retrieved from the cache with {@link #getVectorCache()}, {@link #getIntersectionCache()} or {@link #getBarcodeCache()}</p>
+	 * 
+	 * @param features Features to get
+	 * 
+	 * @return Pixy2 error code
+	 */
+	public byte getAllFeatures(byte features) {
+		return getFeatures(LINE_GET_ALL_FEATURES, features, true);
+	}
+
+	/**
+	 * <p>Gets the main features from the Pixy2. This is a more constrained line
+	 * tracking algorithm.</p>
+	 * 
+	 * <p>Defaults to waiting for a response</p>
+	 * 
+	 * <p>Returned data should be retrieved from the cache with {@link #getVectorCache()}, {@link #getIntersectionCache()} or {@link #getBarcodeCache()}</p>
+	 * 
+	 * @param features Features to get
+	 * 
+	 * @return Pixy2 error code
+	 */
+	public byte getMainFeatures(byte features) {
+		return getFeatures(LINE_GET_MAIN_FEATURES, features, true);
+	}
+
+	/**
+	 * <p>Gets all features from Pixy2</p>
+	 * 
+	 * <p>Returned data should be retrieved from the cache with {@link #getVectorCache()}, {@link #getIntersectionCache()} or {@link #getBarcodeCache()}</p>
+	 * 
+	 * @param features Features to get
+	 * @param wait     Wait for response
+	 * 
+	 * @return Pixy2 error code
+	 */
+	public byte getAllFeatures(byte features, boolean wait) {
+		return getFeatures(LINE_GET_ALL_FEATURES, features, wait);
+	}
+
+	/**
+	 * <p>Gets the main features from the Pixy2. This is a more constrained line
+	 * tracking algorithm.</p>
+	 * 
+	 * <p>Returned data should be retrieved from the cache with {@link #getVectorCache()}, {@link #getIntersectionCache()} or {@link #getBarcodeCache()}</p>
+	 * 
+	 * @param features Features to get
+	 * @param wait     Wait for response
+	 * 
+	 * @return Pixy2 error code
+	 */
+	public byte getMainFeatures(byte features, boolean wait) {
+		return getFeatures(LINE_GET_MAIN_FEATURES, features, wait);
+	}
+
+	/**
 	 * <p>Gets specified features from Pixy2</p>
 	 * 
-	 * <p>Returned data should be retrieved from the cache with {@link #getVectors()}, {@link #getIntersections()} or {@link #getBarcodes()}</p>
+	 * <p>Returned data should be retrieved from the cache with {@link #getVectorCache()}, {@link #getIntersectionCache()} or {@link #getBarcodeCache()}</p>
 	 * 
 	 * @param type     Type of features to get
 	 * @param features Features to get
@@ -112,7 +176,7 @@ public class Pixy2Line {
 	 * 
 	 * @return Pixy2 error code
 	 */
-	public byte getFeatures(byte type, byte features, boolean wait) {
+	private byte getFeatures(byte type, byte features, boolean wait) {
 		byte res;
 		int offset, fsize, ftype;
 		byte[] fdata;
@@ -210,7 +274,7 @@ public class Pixy2Line {
 	 * 
 	 * @return Pixy2 Lines
 	 */
-	public Vector[] getVectors() {
+	public Vector[] getVectorCache() {
 		return vectors;
 	}
 
@@ -221,7 +285,7 @@ public class Pixy2Line {
 	 * 
 	 * @return Pixy2 Intersectionss
 	 */
-	public Intersection[] getIntersections() {
+	public Intersection[] getIntersectionCache() {
 		return intersections;
 	}
 
@@ -232,7 +296,7 @@ public class Pixy2Line {
 	 * 
 	 * @return Pixy2 Barcodes
 	 */
-	public Barcode[] getBarcodes() {
+	public Barcode[] getBarcodeCache() {
 		return barcodes;
 	}
 
@@ -348,9 +412,9 @@ public class Pixy2Line {
 			return Pixy2.PIXY_RESULT_ERROR; // Some kind of bitstream error
 	}
 
-	public class Vector {
+	public static class Vector {
 
-		private int x0, y0, x1, y1, index, flags = 0;
+		private int x0, y0, x1, y1, index, flags;
 
 		/**
 		 * Constructs Vector instance
@@ -431,10 +495,10 @@ public class Pixy2Line {
 
 	}
 
-	public class IntersectionLine {
+	public static class IntersectionLine {
 
-		private int index, reserved = 0;
-		private short angle = 0;
+		private int index, reserved;
+		private short angle;
 
 		/**
 		 * Constructs IntersectionLine object
@@ -488,9 +552,9 @@ public class Pixy2Line {
 
 	}
 
-	public class Intersection {
+	public static class Intersection {
 
-		private int x, y, number, reserved = 0;
+		private int x, y, number, reserved;
 		private IntersectionLine[] lines = new IntersectionLine[LINE_MAX_INTERSECTION_LINES];
 
 		/**
@@ -572,9 +636,9 @@ public class Pixy2Line {
 
 	}
 
-	public class Barcode {
+	public static class Barcode {
 
-		private int x, y, flags, code = 0;
+		private int x, y, flags, code;
 
 		/**
 		 * Constructs barcode object

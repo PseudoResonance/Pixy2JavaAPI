@@ -73,7 +73,51 @@ public class Pixy2CCC {
 	/**
 	 * <p>Gets signature {@link Block}s from Pixy2</p>
 	 * 
-	 * <p>Returned data should be retrieved from the cache with {@link #getBlocks()}</p>
+	 * <p>Defaults to waiting for a response, getting blocks from all signatures and a maximum of all 256 blocks</p>
+	 * 
+	 * <p>Returned data should be retrieved from the cache with {@link #getBlockCache()}</p>
+	 * 
+	 * @return Pixy2 error code
+	 */
+	public int getBlocks() {
+		return getBlocks(true, CCC_SIG_ALL, 0xff);
+	}
+
+	/**
+	 * <p>Gets signature {@link Block}s from Pixy2</p>
+	 * 
+	 * <p>Defaults to getting blocks from all signatures and a maximum of all 256 blocks</p>
+	 * 
+	 * <p>Returned data should be retrieved from the cache with {@link #getBlockCache()}</p>
+	 * 
+	 * @param wait      Whether to wait for Pixy2 if data is not available
+	 * 
+	 * @return Pixy2 error code
+	 */
+	public int getBlocks(boolean wait) {
+		return getBlocks(wait, CCC_SIG_ALL, 0xff);
+	}
+
+	/**
+	 * <p>Gets signature {@link Block}s from Pixy2</p>
+	 * 
+	 * <p>Defaults to getting a maximum of all 256 blocks</p>
+	 * 
+	 * <p>Returned data should be retrieved from the cache with {@link #getBlockCache()}</p>
+	 * 
+	 * @param wait      Whether to wait for Pixy2 if data is not available
+	 * @param sigmap    Sigmap to look for
+	 * 
+	 * @return Pixy2 error code
+	 */
+	public int getBlocks(boolean wait, int sigmap) {
+		return getBlocks(wait, sigmap, 0xff);
+	}
+
+	/**
+	 * <p>Gets signature {@link Block}s from Pixy2</p>
+	 * 
+	 * <p>Returned data should be retrieved from the cache with {@link #getBlockCache()}</p>
 	 * 
 	 * @param wait      Whether to wait for Pixy2 if data is not available
 	 * @param sigmap    Sigmap to look for
@@ -141,13 +185,13 @@ public class Pixy2CCC {
 	 * 
 	 * @return Pixy2 signature Blocks
 	 */
-	public ArrayList<Block> getBlocks() {
+	public ArrayList<Block> getBlockCache() {
 		return blocks;
 	}
 
-	public class Block {
+	public static class Block {
 
-		private int signature, x, y, width, height, angle, index, age = 0;
+		private int signature, x, y, width, height, angle, index, age;
 
 		/**
 		 * Constructs signature block instance

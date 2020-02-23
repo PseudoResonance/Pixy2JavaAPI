@@ -221,7 +221,7 @@ public class Pixy2 {
 		return this.video;
 	}
 
-	public class Version {
+	public static class Version {
 
 		protected int hardware = 0;
 		protected int firmwareMajor = 0;
@@ -692,7 +692,7 @@ public class Pixy2 {
 	}
 
 	// Checksum holder class
-	public class Checksum {
+	public static class Checksum {
 
 		int cs = 0;
 
