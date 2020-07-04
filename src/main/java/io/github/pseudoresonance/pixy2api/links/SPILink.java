@@ -32,7 +32,7 @@ import io.github.pseudoresonance.pixy2api.Pixy2.Checksum;
  */
 
 public class SPILink implements Link {
-	private final static int PIXY_SPI_CLOCKRATE = 2000;
+	private final static int PIXY_SPI_CLOCKRATE = 2000000;
 
 	private SPI spi = null;
 

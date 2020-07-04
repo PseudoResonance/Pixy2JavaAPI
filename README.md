@@ -21,7 +21,7 @@ The maven repository is located at: https://nexus.otake.pw/repository/maven-publ
 
 Add `maven { url 'https://nexus.otake.pw/repository/maven-public/' }` under `repositories`
 
-Add `implementation 'pw.otake.pseudoresonance:pixy2-java-api:1.4'` under `dependencies` Replace `1.4` with the current version of the API.
+Add `implementation 'pw.otake.pseudoresonance:pixy2-java-api:1.4.1'` under `dependencies` Replace `1.4.1` with the current version of the API.
 
 Your `build.gradle` should resemble this:
 
@@ -33,7 +33,7 @@ repositories {
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
 dependencies {
-    implementation 'pw.otake.pseudoresonance:pixy2-java-api:1.4'
+    implementation 'pw.otake.pseudoresonance:pixy2-java-api:1.4.1'
     implementation wpi.deps.wpilib()
     nativeZip wpi.deps.wpilibJni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
@@ -94,6 +94,8 @@ SPI is the recommended link type due to it's higher data transfer rate as well a
 | 2 | 5V (from VRM) |
 | 4 | TXD |
 | 6 | ⏚ Ground |
+
+**WARNING**: The RoboRIO RS-232 port outputs an RS-232 serial signal, which is incompatible with the Pixy2's TTL serial signal and may result in damage to the Pixy2. An RS-232 to TTL converter board can be used, or the Pixy2 can be wired to the TTL serial pins in the RoboRIO's MXP expansion port.
 
 **NOTE**: The RoboRIO does not have a 5V output for UART/Serial/RS-232, and thus, the 5V must be sourced elsewhere, such as from the VRM, or another 5V pin.
 
