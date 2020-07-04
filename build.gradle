@@ -72,8 +72,8 @@ publishing {
     }
     repositories {
         maven {
-       	 	def releasesRepoUrl = "http://192.168.0.20:8081/repository/maven-releases/"
-            def snapshotsRepoUrl = "http://192.168.0.20:8081/repository/maven-snapshots/"
+       	 	def releasesRepoUrl = "http://192.168.0.20:4540/repository/maven-releases/"
+            def snapshotsRepoUrl = "http://192.168.0.20:4540/repository/maven-snapshots/"
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials {
                 username = project.hasProperty('nexus_username') ? nexus_username : (System.getenv('NEXUS_USERNAME') != null ? System.getenv('NEXUS_USERNAME') : '')
