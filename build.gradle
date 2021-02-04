@@ -1,14 +1,11 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2020.3.2"
+    id "edu.wpi.first.GradleRIO" version "${gradle_rio_version}"
     id "maven-publish"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
-
-// Set this to true to enable desktop support.
-def includeDesktopSupport = false
 
 javadoc {
     source = sourceSets.main.allJava
@@ -18,27 +15,33 @@ javadoc {
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
 dependencies {
-    implementation "edu.wpi.first.wpilibj:wpilibj-java:${wpi.wpilibVersion}".toString()
+    implementation "edu.wpi.first.wpilibj:wpilibj-java:${wpi.wpilibVersion}"
 }
 
 ext {
-    jarToPublish = file( 'pixy2-java-api.jar' )
+    jarToPublish = file( "${project.artifact_name}.jar" )
 }
 
 jar {
-	baseName 'pixy2-java-api'
+	baseName "${project.artifact_name}"
 }
 
 task sourceJar(type: Jar, dependsOn: classes) {
-	baseName 'pixy2-java-api'
+	baseName "${project.artifact_name}"
     classifier 'sources'
     from sourceSets.main.allSource
 }
  
 task javadocJar(type: Jar, dependsOn: javadoc) {
-	baseName 'pixy2-java-api'
+	baseName "${project.artifact_name}"
     classifier = 'javadoc'
     from javadoc.destinationDir
+}
+
+task replaceVersionInREADME {
+    ant.replaceregexp(match:"${project.artifact_group}:${project.artifact_name}:([0-9\\.]+)", replace:"${project.artifact_group}:${project.artifact_name}:${project.artifact_version}", flags:'g', byline:true) {
+        fileset(dir: '.', includes: 'README.md')
+    }
 }
 
 publishing {
@@ -47,9 +50,9 @@ publishing {
        	 	from components.java
         	artifact sourceJar
             artifact javadocJar
-        	groupId = 'pw.otake.pseudoresonance'
-            artifactId = 'pixy2-java-api'
-            version = '1.4.1'
+        	groupId = "${project.artifact_group}"
+            artifactId = "${project.artifact_name}"
+            version = "${project.artifact_version}"
             pom {
                 name = 'Pixy2JavaAPI'
                 description = 'Java port of Pixy2 API for FIRST Robotics'
