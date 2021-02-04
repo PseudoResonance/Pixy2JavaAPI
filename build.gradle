@@ -39,7 +39,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 task replaceVersionInREADME {
-    ant.replaceregexp(match:"${project.artifact_group}:${project.artifact_name}:([0-9\\.]+)", replace:"${project.artifact_group}:${project.artifact_name}:${project.artifact_version}", flags:'g', byline:true) {
+    ant.replaceregexp(match:"${project.artifact_group}:${project.artifact_name}:([0-9\\.]+)", replace:"${project.artifact_group}:${project.artifact_name}:${project.artifact_version}", flags:'g', byline:true, encoding: 'UTF-8') {
         fileset(dir: '.', includes: 'README.md')
     }
 }
