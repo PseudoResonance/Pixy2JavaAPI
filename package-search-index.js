@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"io.github.pseudoresonance.pixy2api"},{"l":"io.github.pseudoresonance.pixy2api.links"}]
