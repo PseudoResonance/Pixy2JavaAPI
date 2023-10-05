@@ -1,4 +1,4 @@
-name: Gradle Javadoc
+name: Gradle Build/Javadoc
 
 on:
   push:
