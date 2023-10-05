@@ -1,7 +1,7 @@
 # Pixy2JavaAPI
 
 [![Build Status](https://ci.otake.pw/buildStatus/icon?job=Pixy2JavaAPI&subject=Jenkins)](https://ci.otake.pw/job/Pixy2JavaAPI/)
-[Latest Javadocs](https://ci.otake.pw/job/Pixy2JavaAPI/javadoc/index.html?overview-tree.html)
+[Latest Javadocs](https://pseudoresonance.github.io/Pixy2JavaAPI/)
 
 Pixy2 API ported to Java for FIRST Robotics RoboRIO
 
