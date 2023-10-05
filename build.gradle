@@ -23,17 +23,17 @@ ext {
 }
 
 jar {
-	baseName "${project.artifact_name}"
+    baseName "${project.artifact_name}"
 }
 
 task sourceJar(type: Jar, dependsOn: classes) {
-	baseName "${project.artifact_name}"
+    baseName "${project.artifact_name}"
     classifier 'sources'
     from sourceSets.main.allSource
 }
  
 task javadocJar(type: Jar, dependsOn: javadoc) {
-	baseName "${project.artifact_name}"
+    baseName "${project.artifact_name}"
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
@@ -47,10 +47,10 @@ task replaceVersionInREADME {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-       	 	from components.java
-        	artifact sourceJar
+       	    from components.java
+            artifact sourceJar
             artifact javadocJar
-        	groupId = "${project.artifact_group}"
+            groupId = "${project.artifact_group}"
             artifactId = "${project.artifact_name}"
             version = "${project.artifact_version}"
             pom {
@@ -75,12 +75,11 @@ publishing {
     }
     repositories {
         maven {
-       	 	def releasesRepoUrl = "http://192.168.0.20:4540/repository/maven-releases/"
-            def snapshotsRepoUrl = "http://192.168.0.20:4540/repository/maven-snapshots/"
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/PseudoResonance/Pixy2JavaAPI"
             credentials {
-                username = project.hasProperty('nexus_username') ? nexus_username : (System.getenv('NEXUS_USERNAME') != null ? System.getenv('NEXUS_USERNAME') : '')
-                password = project.hasProperty('nexus_password') ? nexus_password : (System.getenv('NEXUS_PASSWORD') != null ? System.getenv('NEXUS_PASSWORD') : '')
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
             }
         }
     }
